@@ -1,87 +1,138 @@
-/*Parking Sensor Assistant*/
-#define LEDG1 7
-#define LEDG2 6
-#define LEDY1 5
-#define LEDY2 4
-#define LEDR1 3
-#define LEDR2 2
-#define trigPin 10
-#define echoPin 9
-#define buzzer 8
+int r1 = 13;
+int r2 = 12;
+int y1 = 11;
+int y2 = 10;
+int g1 = 9;
+int g2 = 8;
 
-int sound = 0;
+int trig=3;
+int echo=2;
+
+int buzzer=5;
+
+long duration;
+int distance;
+
 
 void setup() {
-    Serial.begin(9600);
-    pinMode(LEDG1,OUTPUT);
-    pinMode(LEDG2,OUTPUT);
-    pinMode(LEDY1,OUTPUT);
-    pinMode(LEDY2,OUTPUT);
-    pinMode(LEDR1,OUTPUT);
-    pinMode(LEDR2,OUTPUT);
-    pinMode(trigPin,OUTPUT);
-    pinMode(echoPin,OUTPUT);
-    pinMode(buzzer,OUTPUT);
+  // put your setup code here, to run once:
+  pinMode(r1, OUTPUT);
+  pinMode(r2, OUTPUT);
+  pinMode(y1, OUTPUT);
+  pinMode(y2, OUTPUT);
+  pinMode(g1, OUTPUT);
+  pinMode(g2, OUTPUT);
+
+  pinMode(trig, OUTPUT);
+  pinMode(echo, INPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-    long timeTaken, distance;
-    digitalWrite(trigPin,LOW);
-    delayMicroseconds(2);
-    digitalWrite(trigPin,HIGH);
-    delayMicroseconds(10);
-    digitalWrite(trigPin,LOW);
-    timeTaken = pulseIn(echoPin,HIGH);
-    distance = (timeTaken/2)/ 29.1;
+  // put your main code here, to run repeatedly:
+  calDistance();
+  Serial.println(distance);
+  if(distance<=20){
+    digitalWrite(r1, HIGH);
+    digitalWrite(r2, HIGH);
+    digitalWrite(y1, HIGH);
+    digitalWrite(y2, HIGH);
+    digitalWrite(g1, HIGH);
+    digitalWrite(g2, HIGH);
+    tone(buzzer, 1000);
+  }
+  else if(distance<=30 && distance>20){
+    digitalWrite(r1, LOW);
+    digitalWrite(r2, HIGH);
+    digitalWrite(y1, HIGH);
+    digitalWrite(y2, HIGH);
+    digitalWrite(g1, HIGH);
+    digitalWrite(g2, HIGH);
+    tone(buzzer, 800);
+    delay(200);
+    noTone(buzzer);
+    delay(200);
+  }
+  else if(distance<=40 && distance>30){
+    digitalWrite(r1, LOW);
+    digitalWrite(r2, LOW);
+    digitalWrite(y1, HIGH);
+    digitalWrite(y2, HIGH);
+    digitalWrite(g1, HIGH);
+    digitalWrite(g2, HIGH);
+    tone(buzzer, 600);
+    delay(400);
+    noTone(buzzer);
+    delay(400);
+  }
+  else if(distance<=50 && distance>40){
+    digitalWrite(r1, LOW);
+    digitalWrite(r2, LOW);
+    digitalWrite(y1, LOW);
+    digitalWrite(y2, HIGH);
+    digitalWrite(g1, HIGH);
+    digitalWrite(g2, HIGH);
+    tone(buzzer, 400);
+    delay(600);
+    noTone(buzzer);
+    delay(600);
+  }
+  else if(distance<=60 && distance>50){
+    digitalWrite(r1, LOW);
+    digitalWrite(r2, LOW);
+    digitalWrite(y1, LOW);
+    digitalWrite(y2, LOW);
+    digitalWrite(g1, HIGH);
+    digitalWrite(g2, HIGH);
+    tone(buzzer, 200);
+    delay(800);
+    noTone(buzzer);
+    delay(800);
+  }
+  else if(distance<=70 && distance>60){
+    digitalWrite(r1, LOW);
+    digitalWrite(r2, LOW);
+    digitalWrite(y1, LOW);
+    digitalWrite(y2, LOW);
+    digitalWrite(g1, LOW);
+    digitalWrite(g2, HIGH);
+    tone(buzzer, 100);
+    delay(1000);
+    noTone(buzzer);
+    delay(1000);
+  }
+  else if(distance<=80 && distance>70){
+    digitalWrite(r1, LOW);
+    digitalWrite(r2, LOW);
+    digitalWrite(y1, LOW);
+    digitalWrite(y2, LOW);
+    digitalWrite(g1, LOW);
+    digitalWrite(g2, LOW);
+    tone(buzzer, 50);
+    delay(1000);
+    noTone(buzzer);
+    delay(1000);
+  }
+  else if(distance>80){
+    digitalWrite(r1, LOW);
+    digitalWrite(r2, LOW);
+    digitalWrite(y1, LOW);
+    digitalWrite(y2, LOW);
+    digitalWrite(g1, LOW);
+    digitalWrite(g2, LOW);
+    tone(buzzer,0);
+    noTone(buzzer);
+    
+  }
+}
 
-    if(distance<81){
-        digitalWrite(LEDG1,HIGH); sound = 600;
-    }else{
-        digitalWrite(LEDG1,LOW);
-    }
-
-    if(distance<71){
-        digitalWrite(LEDG2,HIGH); sound = 800;
-    }else{
-        digitalWrite(LEDG2,LOW);
-    }
-
-    if(distance<61){
-        digitalWrite(LEDY1,HIGH); sound = 1000;
-    }else{
-        digitalWrite(LEDY1,LOW);
-    }
-
-    if(distance<51){
-        digitalWrite(LEDY2,HIGH); sound = 1200;
-    }else{
-        digitalWrite(LEDY2,LOW);
-    }
-
-    if(distance<41){
-        digitalWrite(LEDR1,HIGH); sound = 1400;
-    }else{
-        digitalWrite(LEDR1,LOW);
-    }
-
-    if(distance<31){
-        digitalWrite(LEDR2,HIGH); sound = 1600;
-    }else{
-        digitalWrite(LEDR2,LOW);
-    }
-
-    /*buzzer tone*/
-      if(distance>80||distance<=0){
-          noTone(buzzer);
-         
-        }else{
-          tone(buzzer, sound);
-         
-        }
-        
-      
-      delay(500);
-
-
-
+void calDistance(){  
+ digitalWrite(trig, LOW); 
+ delayMicroseconds(2); 
+ digitalWrite(trig, HIGH); 
+ delayMicroseconds(10); 
+ digitalWrite(trig, LOW); 
+ duration = pulseIn(echo, HIGH); 
+ distance = duration * 0.034 / 2; 
+ 
 }
